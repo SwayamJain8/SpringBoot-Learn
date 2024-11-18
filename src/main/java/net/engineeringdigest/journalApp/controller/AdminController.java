@@ -2,6 +2,7 @@ package net.engineeringdigest.journalApp.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineeringdigest.journalApp.cache.AppCache;
+import net.engineeringdigest.journalApp.dto.UserDTO;
 import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,16 @@ public class AdminController {
     }
 
     @PostMapping("/create-admin-user")
-    public void createUser(@RequestBody User user) {
-        userService.saveAdmin(user);
+    public void createUser(@RequestBody UserDTO user) {
+        User newUser = new User();
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(user.getPassword());
+        newUser.setUserName(user.getUserName());
+        newUser.setSentimentAnalysis(user.isSentimentAnalysis());
+        userService.saveAdmin(newUser);
     }
 
-    @GetMapping("clear-app-cache")
+    @GetMapping("/clear-app-cache")
     public void clearAppCache() {
         appCache.init();
     }

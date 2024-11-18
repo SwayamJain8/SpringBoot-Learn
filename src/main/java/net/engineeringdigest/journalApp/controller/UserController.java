@@ -2,6 +2,7 @@ package net.engineeringdigest.journalApp.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineeringdigest.journalApp.api.response.WeatherResponse;
+import net.engineeringdigest.journalApp.dto.UserDTO;
 import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.UserRepository;
 import net.engineeringdigest.journalApp.service.UserService;
@@ -28,12 +29,19 @@ public class UserController {
     private WeatherService weatherService;
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user) {
+    public ResponseEntity<?> updateUser(@RequestBody UserDTO newUser) {
+        User user = new User();
+        user.setUserName(newUser.getUserName());
+        user.setPassword(newUser.getPassword());
+        user.setEmail(newUser.getEmail());
+        user.setSentimentAnalysis(newUser.isSentimentAnalysis());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User userInDb = userService.findByUserName(userName);
         userInDb.setUserName(user.getUserName());
         userInDb.setPassword(user.getPassword());
+        userInDb.setEmail(user.getEmail());
+        userInDb.setSentimentAnalysis(user.isSentimentAnalysis());
         userService.saveNewUser(userInDb);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

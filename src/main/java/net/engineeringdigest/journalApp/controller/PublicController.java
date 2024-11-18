@@ -33,11 +33,11 @@ public class PublicController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @GetMapping("/health-check")
-    public String healthCheck() {
-        log.info("Health is OK");
-        return "OK";
-    }
+//    @GetMapping("/health-check")
+//    public String healthCheck() {
+//        log.info("Health is OK");
+//        return "OK";
+//    }
 
 
     @PostMapping("/signup")
@@ -46,13 +46,18 @@ public class PublicController {
         newUser.setEmail(user.getEmail());
         newUser.setPassword(user.getPassword());
         newUser.setUserName(user.getUserName());
-        newUser.setSentimentAnalysis(String.valueOf(user.isSentimentAnalysis()));
+        newUser.setSentimentAnalysis(user.isSentimentAnalysis());
         userService.saveNewUser(newUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
     try {
+        User user = new User();
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setUserName(userDTO.getUserName());
+        user.setSentimentAnalysis(userDTO.isSentimentAnalysis());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
         String jwt = jwtUtil.generateToken(userDetails.getUsername());

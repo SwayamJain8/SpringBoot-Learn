@@ -2,6 +2,7 @@ package net.engineeringdigest.journalApp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import net.engineeringdigest.journalApp.dto.JournalEntryDTO;
 import net.engineeringdigest.journalApp.entity.JournalEntry;
 import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.service.JournalEntryService;
@@ -44,12 +45,16 @@ public class JournalEntryController {
     }
 
     @PostMapping
-    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry) {
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntryDTO myEntry) {
         try {
+            JournalEntry journalEntry = new JournalEntry();
+            journalEntry.setTitle(myEntry.getTitle());
+            journalEntry.setContent(myEntry.getContent());
+            journalEntry.setSentiment(myEntry.getSentiment());
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
-            journalEntryService.saveEntry(myEntry, userName);
-            return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
+            journalEntryService.saveEntry(journalEntry, userName);
+            return new ResponseEntity<>(journalEntry, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -87,9 +92,13 @@ public class JournalEntryController {
     @PutMapping("id/{myId}")
     public ResponseEntity<?> updateJournalEntry(
                 @PathVariable String myId,
-                @RequestBody JournalEntry newEntry
+                @RequestBody JournalEntryDTO newEntry
             ) {
                 ObjectId objectId = new ObjectId(myId);
+                JournalEntry newjournalEntry = new JournalEntry();
+                newjournalEntry.setTitle(newEntry.getTitle());
+                newjournalEntry.setContent(newEntry.getContent());
+                newjournalEntry.setSentiment(newEntry.getSentiment());
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 String userName = authentication.getName();
                 User user = userService.findByUserName(userName);
@@ -98,8 +107,9 @@ public class JournalEntryController {
                     Optional<JournalEntry> journalEntry = journalEntryService.findById(objectId);
                     if(journalEntry.isPresent()) {
                         JournalEntry old = journalEntry.get();
-                        old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
-                        old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
+                        old.setTitle(newjournalEntry.getTitle() != null && !newjournalEntry.getTitle().equals("") ? newjournalEntry.getTitle() : old.getTitle());
+                        old.setContent(newjournalEntry.getContent() != null && !newjournalEntry.getContent().equals("") ? newjournalEntry.getContent() : old.getContent());
+                        old.setSentiment(newjournalEntry.getSentiment() != null ? newjournalEntry.getSentiment() : old.getSentiment());
                         journalEntryService.saveEntry(old);
                         return new ResponseEntity<>(old, HttpStatus.OK);
                     }

@@ -1,6 +1,5 @@
 package net.engineeringdigest.journalApp.filter;
 
-import net.engineeringdigest.journalApp.service.UserDetailsServiceImpl;
 import net.engineeringdigest.journalApp.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
-        response.addHeader("admin", "vipul");
+        response.addHeader("admin", "swayam");
         chain.doFilter(request, response);
     }
 
