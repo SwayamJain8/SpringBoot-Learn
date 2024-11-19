@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
-@Tag(name = "Journal APIs")
+@Tag(name = "Journal APIs" , description = "Create, Read, Update & Delete Journal Entries")
 public class JournalEntryController {
 
     @Autowired
@@ -45,6 +45,7 @@ public class JournalEntryController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new journal entry")
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntryDTO myEntry) {
         try {
             JournalEntry journalEntry = new JournalEntry();
@@ -61,6 +62,7 @@ public class JournalEntryController {
     }
 
     @GetMapping("id/{myId}")
+    @Operation(summary = "Get a journal entry by id")
     public ResponseEntity<?> getJournalEntryById(@PathVariable String myId) {
         ObjectId objectId = new ObjectId(myId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -77,6 +79,7 @@ public class JournalEntryController {
     }
 
     @DeleteMapping("id/{myId}")
+    @Operation(summary = "Delete a journal entry by id")
     public ResponseEntity<?> deleteJournalEntryById(@PathVariable String myId) {
         ObjectId objectId = new ObjectId(myId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -90,6 +93,7 @@ public class JournalEntryController {
     }
 
     @PutMapping("id/{myId}")
+    @Operation(summary = "Update a journal entry by id")
     public ResponseEntity<?> updateJournalEntry(
                 @PathVariable String myId,
                 @RequestBody JournalEntryDTO newEntry

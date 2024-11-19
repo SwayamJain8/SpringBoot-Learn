@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineeringdigest.journalApp.api.response.WeatherResponse;
 import net.engineeringdigest.journalApp.dto.UserDTO;
@@ -29,6 +30,7 @@ public class UserController {
     private WeatherService weatherService;
 
     @PutMapping
+    @Operation(summary = "Update current user")
     public ResponseEntity<?> updateUser(@RequestBody UserDTO newUser) {
         User user = new User();
         user.setUserName(newUser.getUserName());
@@ -47,6 +49,7 @@ public class UserController {
     }
 
     @DeleteMapping
+    @Operation(summary = "Delete current user")
     public ResponseEntity<?> deleteUserById() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepository.deleteByUserName(authentication.getName());
@@ -54,9 +57,10 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Get current user")
     public ResponseEntity<?> greeting() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
+        WeatherResponse weatherResponse = weatherService.getWeather("Ahmedabad");
         String greeting = "";
         if(weatherResponse != null) {
             greeting = ", Weather feels like " + weatherResponse.getCurrent().getFeelslike();

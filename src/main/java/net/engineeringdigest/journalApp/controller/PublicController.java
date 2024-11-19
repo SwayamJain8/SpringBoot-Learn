@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.engineeringdigest.journalApp.dto.UserDTO;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/public")
 @Slf4j
-@Tag(name = "Public APIs")
+@Tag(name = "Public APIs", description = "Signup & Login Users")
 public class PublicController {
 
     @Autowired
@@ -41,6 +42,7 @@ public class PublicController {
 
 
     @PostMapping("/signup")
+    @Operation(summary = "Create a new user")
     public void signup(@RequestBody UserDTO user) {
         User newUser = new User();
         newUser.setEmail(user.getEmail());
@@ -51,6 +53,7 @@ public class PublicController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login user")
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
     try {
         User user = new User();
